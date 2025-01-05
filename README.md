@@ -57,20 +57,38 @@ Faced with this challenge, we sought an alternative solution. After examining th
 Based on this analysis, we decided to handle missing values by imputing numerical columns with their median and categorical columns with their mode. However, for the Cargo_Capacity_Column, which serves as the target variable, we opted not to apply imputation, as maintaining accuracy in this column is critical, we've just decided to erase all the missing values of this column.
 
 ### Preprocessing
-**Feature Encoding**:
-Applied one-hot encoding for categorical features such as `Weather_Status` and `Terrain_Type`.
--> SILUPPA FACENDO UNA FRASE MIGLORE 
+**Preprocessing**
 
-FEATURE CORRELATION CON LE DUE CORRELATION MATRIX + SPIEGALE 
+**Feature Encoding**
 
-WE KEEP ONLU THE RELEVANT FEATURES --> MI APPLIED WHEN MI = 0 -> REMOVE THE FEAUTRE -> SPEIGA LOBBIETTIVO DI QEUSTO PROCESSO
+To prepare the dataset for analysis, categorical variables such as **Weather_Status** and **Terrain_Type** were transformed using one-hot encoding. This technique created binary columns for each unique category, ensuring compatibility with machine learning models. By using `pd.get_dummies()` with `drop_first=True`, we avoided multicollinearity issues stemming from the dummy variable trap. Binary features like True/False values were similarly encoded as 0s and 1s, facilitating numerical processing. The final dataset contained 34 features, ready for further analysis.
+![relationmatrix](![Unknown](https://github.com/user-attachments/assets/790af350-a0c2-4575-845a-368a591f33a7))
 
 
-RESTO NON HO TROPPO LETTO MA CERCA DI SEGUIRE LA STRUTTURA DI QEULLO CHE TI AVEVO DETTO PSECIFICANDO BENE LE COSE FACENDO FRASI CHE SPIEGANO IL CONCETTO. 
-### Dataset Splitting
-- **Training Set**: 80%
-- **Testing Set**: 20%
-- **Cross-validation**: Used 5-fold cross-validation for model evaluation.
+**Correlation Analysis**
+
+Two correlation matrices were computed to identify relationships between features and the target variable, `Cargo_Capacity_kg`. The first matrix included all features, revealing the following key insights:
+
+- **Wind_Speed_kmph** exhibited a moderate positive correlation (0.73) with `Cargo_Capacity_kg`, suggesting higher wind speeds lead to greater cargo capacity.
+- **Quantum_Battery_True** showed a moderate positive correlation (0.40) with Cargo_Capacity_kg`, indicating that drones equipped with quantum batteries tend to carry more cargo.
+- **Air_Temperature_Celsius** had a weak positive correlation (0.08) with the target variable.
+
+The second heatmap focused only on the most relevant features, highlighting those with stronger relationships to the target. Features with negligible correlations, such as **Route_Optimization_Per_Second** and **Flight_Zone_North**, were marked for potential removal but since we aren't in a linear relationship correlation, we must use other techinques to analyze the relationship between the values, and calculate how important each feature is in predicting Cargo_Capacity_kg.
+This process ensured that subsequent modeling would focus on impactful predictors, improving model efficiency. 
+
+**Feature Selection via Mutual Information**
+
+To complement correlation analysis, we applied Mutual Information (MI) to evaluate feature importance. Unlike correlation, MI measures both linear and non-linear dependencies, offering a holistic view of feature relevance.
+
+Features with MI scores of 0 were deemed irrelevant and removed. This step ensured that the dataset was streamlined, retaining only impactful variables. For example, **Wind_Speed_kmph**, **Quantum_Battery_True**, and **Air_Temperature_Celsius** emerged as key predictors of `Cargo_Capacity_kg`. By removing irrelevant features, we reduced noise and improved computational efficiency.
+
+**Objective of Feature Selection**
+
+The primary goal of this process was to refine the dataset by eliminating features with negligible or no predictive power. This ensures a cleaner dataset, reduces overfitting risks, and allows models to focus on the most relevant variables, enhancing both interpretability and performance.
+
+**Dataset Splitting, Scaling, and Reflection**
+
+After feature selection, the dataset was divided into training and test subsets using an 80/20 split, this is important to avoid overfitting. Standard scaling was applied to standardize the magnitude of features, ensuring uniformity and compatibility with machine learning algorithms.
 
 ### Model Selection and Rationale
 
